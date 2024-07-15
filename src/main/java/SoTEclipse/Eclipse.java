@@ -22,7 +22,7 @@ public class Eclipse {
         if(current == 0) current = start;
         do {
             current += offset_0 + offset_1 + offset_2 + offset_3;
-        } while(now + offset_0 + offset_1 + offset_2 + offset_3 > current);
+        } while(now > current + offset_0 + offset_1 + offset_2 + offset_3);
 
         current += offset_0;
         list.add(current);
@@ -32,6 +32,29 @@ public class Eclipse {
         list.add(current);
         current += offset_3;
         list.add(current);
+
+        return list;
+    }
+
+    public List<Long> getNextEclipse(int count){
+        List<Long> list = new ArrayList<>();
+        long start = 1703636400000L + TimeUnit.MINUTES.toMillis(60 + 21);
+        long now = new Date().getTime();
+        if(current == 0) current = start;
+        do {
+            current += offset_0 + offset_1 + offset_2 + offset_3;
+        } while(now > current + offset_0 + offset_1 + offset_2 + offset_3);
+
+        for(int i = 0; i < count; i++){
+            current += offset_0;
+            list.add(current);
+            current += offset_1;
+            list.add(current);
+            current += offset_2;
+            list.add(current);
+            current += offset_3;
+            list.add(current);
+        }
 
         return list;
     }
