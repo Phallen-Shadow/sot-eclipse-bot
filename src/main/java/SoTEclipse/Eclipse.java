@@ -48,6 +48,8 @@ public class Eclipse {
             current += offset_0 + offset_1 + offset_2 + offset_3;
         } while(now > current + offset_0 + offset_1 + offset_2 + offset_3);
 
+        System.out.println("Offset " + current);
+
         for(int i = 0; i < count; i++){
             current += offset_0;
             list.add(current);
@@ -59,6 +61,25 @@ public class Eclipse {
             list.add(current);
         }
 
+        return list;
+    }
+
+    public List<Long> getNextEclipseNoLoop(int cycles) {
+        List<Long> list = new ArrayList<>();
+        long now = new Date().getTime();
+        long offset = offset_0 + offset_1 + offset_2 + offset_3 + 7;
+        long diff = now % offset;
+        long eclipse = (now - diff);
+        for (int i = 0; i < cycles; i++) {
+            eclipse += offset_0;
+            list.add(eclipse);
+            eclipse += offset_1;
+            list.add(eclipse);
+            eclipse += offset_2;
+            list.add(eclipse);
+            eclipse += offset_3;
+            list.add(eclipse);
+        }
         return list;
     }
 }
