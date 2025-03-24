@@ -30,7 +30,7 @@ public class AboutCmd extends MemberCommand {
         EmbedBuilder eb = Messages.Embeds.getEmbedBase();
         eb.setTitle("About " + event.getJDA().getSelfUser().getName());
         eb.setDescription(event.getJDA().getSelfUser().getName() + " is a bot made for accessing Sea of Thieves timing utilities made by " +
-                user.getAsMention());
+                user.getAsMention() + "\n\n Based on [this](https://docs.google.com/spreadsheets/d/16_PB9alwNZt7CowvU5MowXe7l__RAYNgO0hDYzZ-HqY/edit?gid=2028923469#gid=2028923469) Google Sheet by Wazagoat, Swabbie John, JimboLoL, Owiiie, & Lukitch.");
         StringBuilder tech = new StringBuilder();
         tech.append("**Build Date:** ").append(new Scanner(getClass().getClassLoader().getResourceAsStream("build-date.txt")).nextLine() + "\n");
         tech.append("**JDA Version:** ").append("v5.0.0-beta.17\n");
