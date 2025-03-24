@@ -15,6 +15,9 @@ public class Eclipse {
 
     private long current = 0;
 
+    // Original Sheet
+    // https://docs.google.com/spreadsheets/d/16_PB9alwNZt7CowvU5MowXe7l__RAYNgO0hDYzZ-HqY/edit?gid=2028923469#gid=2028923469
+
     public List<Long> getNextEclipse(){
         List<Long> list = new ArrayList<>();
         long start = 1703636400000L + TimeUnit.MINUTES.toMillis(60 + 21);

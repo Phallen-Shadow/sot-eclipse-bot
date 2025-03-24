@@ -37,6 +37,7 @@ public class Bot {
     private static JDA jda;
     private final EventWaiter waiter;
     private final ScheduledExecutorService threadpool;
+    private final static long startmilli = new Date().getTime();
 
     private static Logger log = getLogger();
 
@@ -95,19 +96,20 @@ public class Bot {
         jda.getPresence().setActivity(Activity.watching("Eclipses"));
 
         System.out.println("Bot started successfully!"); //Should signal started to pterodactyl
+        log.info("{} started [took {}", jda.getPresence().getJDA().getSelfUser().getName(), new Date().getTime() - startmilli + "ms] ");
 
 
-        List<Long> ll = new ArrayList<>();
-        threadpool.scheduleAtFixedRate(() -> {
-            new Eclipse().getNextEclipse().forEach(e -> {
-                if(e - TimeUnit.HOURS.toMillis(2) > new Date().getTime()){
-                    if(!ll.contains(e)){
-
-                    }
-                }
-//                System.out.println(DateTimeFormatter.ofPattern("yyyy/MMMM/dd HH:mm:ss z").withZone(ZoneId.systemDefault()).format(new Date(e).toInstant()));
-            });
-        }, (60 - LocalDateTime.now().getSecond()) % 60, 60, TimeUnit.SECONDS);
+//        List<Long> ll = new ArrayList<>();
+//        threadpool.scheduleAtFixedRate(() -> {
+//            new Eclipse().getNextEclipse().forEach(e -> {
+//                if(e - TimeUnit.HOURS.toMillis(2) > new Date().getTime()){
+//                    if(!ll.contains(e)){
+//
+//                    }
+//                }
+////                System.out.println(DateTimeFormatter.ofPattern("yyyy/MMMM/dd HH:mm:ss z").withZone(ZoneId.systemDefault()).format(new Date(e).toInstant()));
+//            });
+//        }, (60 - LocalDateTime.now().getSecond()) % 60, 60, TimeUnit.SECONDS);
     }
 
     public static Bot getBot() {
