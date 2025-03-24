@@ -22,7 +22,7 @@ public class EclipseCmd extends MemberCommand {
         this.category = new Category("SoT Utils");
 
         List<OptionData> options = new ArrayList<>();
-        options.add(new OptionData(OptionType.INTEGER, "cycles", "Cycles to go forwards", false));
+        options.add(new OptionData(OptionType.INTEGER, "cycles", "Cycles to go forwards (between 1 and 10)", false).setMinValue(1).setMaxValue(10));
         this.options = options;
     }
 
