@@ -1,10 +1,12 @@
 package bot;
 
 import SoTEclipse.Eclipse;
+import bot.commands.admin.EclipseAlertsCmd;
 import bot.commands.member.AboutCmd;
 import bot.commands.member.EclipseCmd;
 import bot.commands.member.HelpCmd;
 import bot.commands.member.NowCmd;
+import bot.storage.Database;
 import ch.qos.logback.classic.Level;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -37,11 +39,12 @@ public class Bot {
     private static JDA jda;
     private final EventWaiter waiter;
     private final ScheduledExecutorService threadpool;
+    private final Database database;
     private final static long startmilli = new Date().getTime();
 
     private static Logger log = getLogger();
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws Exception {
         if(Arrays.toString(args).contains("--debug")) {
             ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
             root.setLevel(Level.DEBUG);
@@ -49,12 +52,13 @@ public class Bot {
         new Bot();
     }
 
-    public Bot() throws InterruptedException, IOException {
+    public Bot() throws Exception {
         log.info("Initializing bot instance...");
         bot = this;
         log.info("Initializing thread executors...");
         waiter = new EventWaiter(Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "waiter")), false);
         threadpool = Executors.newScheduledThreadPool(100, r -> new Thread(r, "bot"));
+        database = new Database("~/sot_eclipse_bot", "sot", ""); // Create default database details.
 
         log.info("Building command client...");
         CommandClientBuilder builder = new CommandClientBuilder();
@@ -69,6 +73,7 @@ public class Bot {
         builder.addSlashCommand(new HelpCmd(this));
         builder.addSlashCommand(new NowCmd(this));
         builder.addSlashCommand(new EclipseCmd(this));
+        builder.addSlashCommand(new EclipseAlertsCmd(this));
 
         CommandClient commandClient = builder.build();
 
@@ -86,7 +91,7 @@ public class Bot {
         }catch (FileNotFoundException ex){
             File file = new File("token.txt");
             if(file.createNewFile()){
-                log.error("Please supply a token in " + file.getAbsolutePath());
+                log.error("Please supply a token in {}", file.getAbsolutePath());
                 System.exit(10);
             }
         }
@@ -99,17 +104,16 @@ public class Bot {
         log.info("{} started [took {}", jda.getPresence().getJDA().getSelfUser().getName(), new Date().getTime() - startmilli + "ms] ");
 
 
-//        List<Long> ll = new ArrayList<>();
-//        threadpool.scheduleAtFixedRate(() -> {
-//            new Eclipse().getNextEclipse().forEach(e -> {
-//                if(e - TimeUnit.HOURS.toMillis(2) > new Date().getTime()){
-//                    if(!ll.contains(e)){
-//
-//                    }
-//                }
-////                System.out.println(DateTimeFormatter.ofPattern("yyyy/MMMM/dd HH:mm:ss z").withZone(ZoneId.systemDefault()).format(new Date(e).toInstant()));
-//            });
-//        }, (60 - LocalDateTime.now().getSecond()) % 60, 60, TimeUnit.SECONDS);
+        threadpool.scheduleAtFixedRate(() -> {
+
+            // Add an hour before all the eclipses happen warning
+            // Add a 15 minute warning
+            // Add a message for during.
+
+            database.eclipseAlerts.preformAll((g, tc) -> {
+                jda.getGuildById(g).getTextChannelById(tc).sendMessage("Test").queue();
+            });
+        }, (60 - LocalDateTime.now().getSecond()) % 60, 60, TimeUnit.SECONDS); //Sync to start of each minute
     }
 
     public static Bot getBot() {
@@ -118,6 +122,10 @@ public class Bot {
 
     public EventWaiter getWaiter() {
         return waiter;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
     public static JDA getJda() {
