@@ -13,56 +13,9 @@ public class Eclipse {
     private final long offset_2 = TimeUnit.MINUTES.toMillis(33);
     private final long offset_3 = TimeUnit.MINUTES.toMillis(24);
 
-    private long current = 0;
-
     // Original Sheet
     // https://docs.google.com/spreadsheets/d/16_PB9alwNZt7CowvU5MowXe7l__RAYNgO0hDYzZ-HqY/edit?gid=2028923469#gid=2028923469
 
-    public List<Long> getNextEclipse(){
-        List<Long> list = new ArrayList<>();
-        long start = 1703636400000L + TimeUnit.MINUTES.toMillis(60 + 21);
-        long now = new Date().getTime();
-        if(current == 0) current = start;
-        do {
-            current += offset_0 + offset_1 + offset_2 + offset_3;
-        } while(now > current + offset_0 + offset_1 + offset_2 + offset_3);
-
-        current += offset_0;
-        list.add(current);
-        current += offset_1;
-        list.add(current);
-        current += offset_2;
-        list.add(current);
-        current += offset_3;
-        list.add(current);
-
-        return list;
-    }
-
-    public List<Long> getNextEclipse(int count){
-        List<Long> list = new ArrayList<>();
-        long start = 1703636400000L + TimeUnit.MINUTES.toMillis(60 + 21);
-        long now = new Date().getTime();
-        if(current == 0) current = start;
-        do {
-            current += offset_0 + offset_1 + offset_2 + offset_3;
-        } while(now > current + offset_0 + offset_1 + offset_2 + offset_3);
-
-        System.out.println("Offset " + current);
-
-        for(int i = 0; i < count; i++){
-            current += offset_0;
-            list.add(current);
-            current += offset_1;
-            list.add(current);
-            current += offset_2;
-            list.add(current);
-            current += offset_3;
-            list.add(current);
-        }
-
-        return list;
-    }
 
     public List<Long> getNextEclipseNoLoop(int cycles) {
         List<Long> list = new ArrayList<>();
