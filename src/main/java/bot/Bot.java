@@ -103,7 +103,6 @@ public class Bot {
         System.out.println("Bot started successfully!"); //Should signal started to pterodactyl
         log.info("{} started [took {}", jda.getPresence().getJDA().getSelfUser().getName(), new Date().getTime() - startmilli + "ms] ");
 
-
         threadpool.scheduleAtFixedRate(() -> {
 
             // Add an hour before all the eclipses happen warning
@@ -111,7 +110,18 @@ public class Bot {
             // Add a message for during.
 
             database.eclipseAlerts.preformAll((g, tc) -> {
-                jda.getGuildById(g).getTextChannelById(tc).sendMessage("Test").queue();
+                long now = (new Date().getTime() - (LocalDateTime.now().getSecond() * 1000)) / 1000;
+                long e = Eclipse.getNextEclipseCycleStartMilli() / 1000;
+//                System.out.println((Eclipse.getNextEclipseCycleStartRounded( -TimeUnit.MINUTES.toMillis(0))) + " == " + (now) );
+                if(Eclipse.getNextEclipseCycleStartRounded( -TimeUnit.HOURS.toMillis(1)) == now){ // One hour countdown
+                    tc.sendMessage("1 hour warning for cycle " + "\n<t:" + e + ":F> (<t:"+e+":R>)\n").queue();
+                }else if(Eclipse.getNextEclipseCycleStartRounded( -TimeUnit.MINUTES.toMillis(15)) == now) { // 15 minute countdown
+                    tc.sendMessage("15 minute warning for cycle" + "\n<t:" + e + ":F> (<t:"+e+":R>)\n").queue();
+                }else if(Eclipse.getNextEclipseCycleStartRounded( -TimeUnit.MINUTES.toMillis(1)) == now){ // 1 minute countdown
+                        tc.sendMessage("current cycle").queue();
+                } else if(Eclipse.getNextEclipseCycleStartRounded( -TimeUnit.MINUTES.toMillis(1)) == now) { // 1 minute countdown
+                    tc.sendMessage("current cycle").queue();
+                }
             });
         }, (60 - LocalDateTime.now().getSecond()) % 60, 60, TimeUnit.SECONDS); //Sync to start of each minute
     }
