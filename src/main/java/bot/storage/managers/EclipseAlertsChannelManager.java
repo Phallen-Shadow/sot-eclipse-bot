@@ -1,5 +1,6 @@
 package bot.storage.managers;
 
+import bot.Bot;
 import database.DataManager;
 import database.DatabaseConnector;
 import database.SQLColumn;
@@ -57,10 +58,20 @@ public class EclipseAlertsChannelManager extends DataManager {
         return removeChannel(guild.getIdLong(), channel.getIdLong());
     }
 
-    public void preformAll(BiConsumer<Long, Long> c){
+    public void preformAll(BiConsumer<Guild, TextChannel> c){
         readWrite(selectAll(), rs -> {
             while(rs.next()){
-                c.accept(GUILD_ID.getValue(rs), CHANNEL_ID.getValue(rs));
+                long gid = GUILD_ID.getValue(rs);
+                long tid = CHANNEL_ID.getValue(rs);
+                if(gid > 0 && tid > 0){
+                    try {
+                        Guild g = Bot.getJda().getGuildById(gid);
+                        TextChannel tc = g.getTextChannelById(tid);
+                        c.accept(g, tc);
+                    } catch (NullPointerException npe){
+                        Bot.getLogger().error("Cannot preform eclipse alert on textchannel with id " + tid + " in guild " + gid + ".");
+                    }
+                }
             }
         });
     }
