@@ -34,10 +34,10 @@ public class EclipseCmd extends MemberCommand {
             cycles = event.getOption("cycles").getAsInt();
         }
         int i = 0;
-        for(long e : new Eclipse().getNextEclipseNoLoop(cycles)) {
+        for(long e : Eclipse.getNextEclipse(cycles)) {
             if(i % 4 == 0) content += "\n";
             e = e/1000;
-            content += "``"+(++i)+".``<t:" + e + ":F> (<t:"+e+":R>)\n";
+            content += "``"+(++i)+".`` <t:" + e + ":F> (<t:"+e+":R>)\n";
         }
         event.replyEmbeds(new EmbedBuilder().setDescription(content).build()).queue();
     }
